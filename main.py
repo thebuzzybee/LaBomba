@@ -31,28 +31,28 @@ while running:
         
     if pygame.key.get_pressed()[pygame.K_KP8]:
                 player2_y -= player2_velocity
-    elif pygame.key.get_pressed()[pygame.K_KP5]:
+    if pygame.key.get_pressed()[pygame.K_KP5]:
                 player2_y += player2_velocity
-    elif pygame.key.get_pressed()[pygame.K_KP4]:
+    if pygame.key.get_pressed()[pygame.K_KP4]:
                 player2_x -= player2_velocity
-    elif pygame.key.get_pressed()[pygame.K_KP6]:
+    if pygame.key.get_pressed()[pygame.K_KP6]:
                 player2_x += player2_velocity
-    elif pygame.key.get_pressed()[pygame.K_KP7]:
+    if pygame.key.get_pressed()[pygame.K_KP7]:
                 print("7")
-    elif pygame.key.get_pressed()[pygame.K_KP9]:
+    if pygame.key.get_pressed()[pygame.K_KP9]:
                 print("9")
                 
-    elif pygame.key.get_pressed()[pygame.K_w]:
+    if pygame.key.get_pressed()[pygame.K_w]:
                 player1_y -= player1_velocity
-    elif pygame.key.get_pressed()[pygame.K_s]:
+    if pygame.key.get_pressed()[pygame.K_s]:
                 player1_y += player1_velocity
-    elif pygame.key.get_pressed()[pygame.K_a]:
+    if pygame.key.get_pressed()[pygame.K_a]:
                 player1_x -= player1_velocity
-    elif pygame.key.get_pressed()[pygame.K_d]:
+    if pygame.key.get_pressed()[pygame.K_d]:
                 player1_x += player1_velocity
-    elif pygame.key.get_pressed()[pygame.K_q]:
+    if pygame.key.get_pressed()[pygame.K_q]:
                 print("q")
-    elif pygame.key.get_pressed()[pygame.K_e]:
+    if pygame.key.get_pressed()[pygame.K_e]:
                 print("e")
     pygame.display.update()        
                 
