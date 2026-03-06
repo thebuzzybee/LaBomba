@@ -19,6 +19,18 @@ player1_hitbox.center = (player1_x, player1_y)
 player2_hitbox = player2_sprite.get_rect()
 player2_hitbox.center = (player2_x, player2_y)
 
+brown_square_sprite = pygame.image.load(r"Brown_square.png")
+black_square_sprite = pygame.image.load(r"Black_square.png")
+
+class TileType(object):
+    def __init__(self, name, start_x, start_y, width, height):
+        self.name = name
+        self.rect = pygame.rect.Rect(start_x, start_y, width, height)
+
+class TileSet(object):
+    def __init__(self, image, colorkey, tile_width, tile_height):
+        self.image = pygame.image.load(image, colorkey)
+
 running = True
 while running:
     window.fill((255,255,255))
