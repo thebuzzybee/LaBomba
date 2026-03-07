@@ -27,33 +27,6 @@ class Game:
                 self.playing = False
                 self.running = False
 
-
-    if pygame.key.get_pressed()[pygame.K_KP8]:
-        player2_y -= player2_velocity
-    if pygame.key.get_pressed()[pygame.K_KP5]:
-        player2_y += player2_velocity
-    if pygame.key.get_pressed()[pygame.K_KP4]:
-        player2_x -= player2_velocity
-    if pygame.key.get_pressed()[pygame.K_KP6]:
-        player2_x += player2_velocity
-    if pygame.key.get_pressed()[pygame.K_KP7]:
-        print("7")
-    if pygame.key.get_pressed()[pygame.K_KP9]:
-        print("9")
-
-    if pygame.key.get_pressed()[pygame.K_w]:
-        player1_y -= player1_velocity
-    if pygame.key.get_pressed()[pygame.K_s]:
-        player1_y += player1_velocity
-    if pygame.key.get_pressed()[pygame.K_a]:
-        player1_x -= player1_velocity
-    if pygame.key.get_pressed()[pygame.K_d]:
-        player1_x += player1_velocity
-    if pygame.key.get_pressed()[pygame.K_q]:
-        print("q")
-    if pygame.key.get_pressed()[pygame.K_e]:
-        print("e")
-    pygame.display.update()
     def draw(self):
         self.window.fill((255,255,255))
         self.all_sprites.draw(self.window)
