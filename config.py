@@ -8,10 +8,14 @@ fps = 60
 player1_velocity = 2
 player2_velocity = 2
 
+explosion_timer = 200
+
 player1_layer = 4
 ground_layer = 1
 destructible_layer = 2
 indestructible_layer = 3
+bomb_layer = 2
+explosion_layer = 2
 
 empty = 0
 destructible = 1

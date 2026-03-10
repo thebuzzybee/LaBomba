@@ -25,8 +25,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
         
-        self.player1_spritesheet = Spritesheet("player1_spritesheet.png")
-        
+        self.player1_spritesheet = Spritesheet("img/Character.png")
+        self.bomb_image = pygame.image.load("img/bomb.png").convert_alpha()
+        self.explosion_image = pygame.image.load("img/explosion.png").convert_alpha()
     
     def createmap(self):
         for row in range(len(game_map1)):
@@ -48,6 +49,10 @@ class Game:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.destructibles = pygame.sprite.LayeredUpdates()
         self.indestructibles = pygame.sprite.LayeredUpdates()
+        self.blocks = pygame.sprite.LayeredUpdates()
+        self.bomb = pygame.sprite.LayeredUpdates()
+        self.explosion = pygame.sprite.LayeredUpdates()
+        self.players = pygame.sprite.LayeredUpdates()
         self.createmap()
         self.playing = True
     
