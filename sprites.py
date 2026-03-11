@@ -15,8 +15,8 @@ class Player1(pygame.sprite.Sprite):
         self.explosion_range = 2
         self.groups = self.game.all_sprites, self.game.players
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = self.game.player1_spritesheet.get_sprite(0, 0, tilesize, tilesize)
-        player1_size = int(tilesize * 2/3)
+        self.image = self.game.player1_spritesheet.get_sprite(0, 0, self.game.tilesize, self.game.tilesize)
+        player1_size = int(self.game.tilesize * 2/3)
         self.image = pygame.transform.scale(self.image, (player1_size, player1_size))
         self.rect = self.image.get_rect()
         self.rect.x = player1_x
@@ -66,10 +66,17 @@ class Player1(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.bottom
                     
     def place_bomb(self):
-        x = int(self.rect.centerx / tilesize) * tilesize
-        y = int(self.rect.centery / tilesize) * tilesize
-        if self.bomb_count > len(self.game.bomb):
-            Bomb(self.game, self.bomb_timer, self.explosion_range, x, y)
+        x = int((self.rect.centerx - self.game.map_offset_x) / self.game.tilesize) * self.game.tilesize + self.game.map_offset_x
+        y = int(self.rect.centery / self.game.tilesize) * self.game.tilesize
+        bomb_rect = pygame.Rect(x, y, self.game.tilesize, self.game.tilesize)
+        for sprite in self.game.bomb:
+            if bomb_rect.colliderect(sprite.rect):
+                break
+        else:
+            if self.bomb_count > len(self.game.bomb):
+                Bomb(self.game, self.bomb_timer, self.explosion_range, x, y)
+            
+        
     
     def destroy(self):
         self.kill()
@@ -82,8 +89,8 @@ class Destructible(pygame.sprite.Sprite):
         
         self.x = x
         self.y = y
-        self.width = tilesize
-        self.height = tilesize
+        self.width = self.game.tilesize
+        self.height = self.game.tilesize
         
         self.image = pygame.image.load("img/brown_square.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
@@ -102,8 +109,8 @@ class Indestructible(pygame.sprite.Sprite):
 
         self.x = x
         self.y = y
-        self.width = tilesize
-        self.height = tilesize
+        self.width = self.game.tilesize
+        self.height = self.game.tilesize
 
         self.image = pygame.image.load("img/black_square.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
@@ -123,8 +130,8 @@ class Bomb(pygame.sprite.Sprite):
         
         self.x = x
         self.y = y
-        self.width = tilesize
-        self.height = tilesize
+        self.width = self.game.tilesize
+        self.height = self.game.tilesize
         
         
         self.image = pygame.transform.scale(self.game.bomb_image, (self.width, self.height))
@@ -141,9 +148,9 @@ class Bomb(pygame.sprite.Sprite):
         directions = [(1,0),(-1,0),(0,1),(0,-1)]
         for i in directions:
             for j in range(self.explosion_range):
-                explosion_x = self.rect.x + i[0] * j * tilesize
-                explosion_y = self.rect.y + i[1] * j * tilesize
-                explosion_rect = pygame.Rect(explosion_x, explosion_y, tilesize, tilesize)
+                explosion_x = self.rect.x + i[0] * j * self.game.tilesize
+                explosion_y = self.rect.y + i[1] * j * self.game.tilesize
+                explosion_rect = pygame.Rect(explosion_x, explosion_y, self.game.tilesize, self.game.tilesize)
                 for sprite in self.game.blocks:
                     if explosion_rect.colliderect(sprite.rect) and isinstance(sprite, Destructible):
                         sprite.destroy()
@@ -163,8 +170,8 @@ class Explosion(pygame.sprite.Sprite):
 
         self.x = x
         self.y = y
-        self.width = tilesize
-        self.height = tilesize
+        self.width = self.game.tilesize
+        self.height = self.game.tilesize
 
         self.image = pygame.transform.scale(self.game.explosion_image, (self.width, self.height))
         self.rect = self.image.get_rect()

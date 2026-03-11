@@ -1,14 +1,12 @@
 ﻿row_count = 32
 column_count = 32
-tilesize = 32
-width = tilesize * column_count
-height = tilesize * row_count
+
 
 fps = 60
 player1_velocity = 2
 player2_velocity = 2
 
-explosion_timer = 200
+explosion_timer = 400
 
 player1_layer = 4
 ground_layer = 1

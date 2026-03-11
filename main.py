@@ -20,10 +20,14 @@ class Spritesheet:
 class Game:
     def __init__(self):
         pygame.init()
-        self.window = pygame.display.set_mode((width, height))
+        self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         pygame.display.set_caption("LaBomba")
+        screen_height = self.window.get_height()
+        screen_width = self.window.get_width()
         self.clock = pygame.time.Clock()
         self.running = True
+        self.tilesize = screen_height // row_count
+        self.map_offset_x = (screen_width - column_count * self.tilesize) // 2
         
         self.player1_spritesheet = Spritesheet("img/Character.png")
         self.bomb_image = pygame.image.load("img/bomb.png").convert_alpha()
@@ -33,8 +37,8 @@ class Game:
         for row in range(len(game_map1)):
             for column in range(len(game_map1[row])):
                 map_code = game_map1[row][column]
-                x = column * tilesize
-                y = row * tilesize
+                x = column * self.tilesize + self.map_offset_x
+                y = row * self.tilesize
                 if map_code == empty:
                     continue
                 elif map_code == destructible:
@@ -60,6 +64,10 @@ class Game:
         self.all_sprites.update()
     def events(self):
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                    self.playing = False
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
