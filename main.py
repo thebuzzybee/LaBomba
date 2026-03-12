@@ -30,8 +30,11 @@ class Game:
         self.map_offset_x = (screen_width - column_count * self.tilesize) // 2
         
         self.player1_spritesheet = Spritesheet("img/Character.png")
+        self.player2_spritesheet = Spritesheet("img/Character.png")
         self.bomb_image = pygame.image.load("img/bomb.png").convert_alpha()
         self.explosion_image = pygame.image.load("img/explosion.png").convert_alpha()
+        self.bombpowerup_image = pygame.image.load("img/bombpowerup.png").convert_alpha()
+        self.rangepowerup_image = pygame.image.load("img/rangepowerup.png").convert_alpha()
     
     def createmap(self):
         for row in range(len(game_map1)):
@@ -46,7 +49,9 @@ class Game:
                 elif map_code == indestructible:
                     Indestructible(self,x,y)
                 elif map_code == player1:
-                    Player1(self,x,y)
+                    Player(self, x ,y ,self.player1_spritesheet, controls_wasd, player_velocity)
+                elif map_code == player2:
+                    Player(self, x ,y ,self.player2_spritesheet, controls_arrows, player_velocity)
                     
     def new(self):
         self.playing = True
@@ -57,6 +62,7 @@ class Game:
         self.bomb = pygame.sprite.LayeredUpdates()
         self.explosion = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates()
+        self.powerup = pygame.sprite.LayeredUpdates()
         self.createmap()
         self.playing = True
     

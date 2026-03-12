@@ -1,53 +1,59 @@
 ﻿import pygame
 from pygame.examples.grid import TILE_SIZE
+import random
 
 from config import *
+from settings import *
 
-class Player1(pygame.sprite.Sprite):
-    def __init__(self, game, player1_x, player1_y):
-        pygame.sprite.Sprite.__init__(self)
+class Player(pygame.sprite.Sprite):
+    def __init__(self, game, x, y, spritesheet, controls, velocity):
         self.game = game
-        self._layer = player1_layer
+        self.controls = controls
+        self._layer = player_layer
+        self.velocity = velocity
         self.x_change = 0
         self.y_change = 0
-        self.bomb_count = 2
-        self.bomb_timer = 3000
-        self.explosion_range = 2
+        self.bomb_count = bomb_count_start
+        self.bomb_timer = bomb_timer_start
+        self.explosion_range = explosion_range_start
         self.groups = self.game.all_sprites, self.game.players
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = self.game.player1_spritesheet.get_sprite(0, 0, self.game.tilesize, self.game.tilesize)
-        player1_size = int(self.game.tilesize * 2/3)
-        self.image = pygame.transform.scale(self.image, (player1_size, player1_size))
-        self.rect = self.image.get_rect()
-        self.rect.x = player1_x
-        self.rect.y = player1_y
-        self.player1_facing = "down"
         
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image = spritesheet.get_sprite(0, 0, self.game.tilesize, self.game.tilesize)
+        player_size = int(self.game.tilesize * 2/3)
+        self.image = pygame.transform.scale(self.image, (player_size, player_size))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.player_facing = "down"
+
     def update(self):
         self.movement()
         self.rect.x += self.x_change
         self.collide_blocks("x")
         self.rect.y += self.y_change
         self.collide_blocks("y")
-        
+
         self.x_change = 0
         self.y_change = 0
+        
     def movement(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            self.x_change -= player1_velocity
-            self.player1_facing = "left"
-        if keys[pygame.K_d]:
-            self.x_change += player1_velocity
-            self.player1_facing = "right"
-        if keys[pygame.K_w]:
-            self.y_change -= player1_velocity
-            self.player1_facing = "up"
-        if keys[pygame.K_s]:
-            self.y_change += player1_velocity
-            self.player1_facing = "down"
-        if keys[pygame.K_q]:
+        if keys[self.controls["left"]]:
+            self.x_change -= self.velocity
+            self.player_facing = "left"
+        if keys[self.controls["right"]]:
+            self.x_change += self.velocity
+            self.player_facing = "right"
+        if keys[self.controls["up"]]:
+            self.y_change -= self.velocity
+            self.player_facing = "up"
+        if keys[self.controls["down"]]:
+            self.y_change += self.velocity
+            self.player_facing = "down"
+        if keys[self.controls["bomb"]]:
             self.place_bomb()
+
     def collide_blocks(self, direction):
         if direction == "x":
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
@@ -56,7 +62,7 @@ class Player1(pygame.sprite.Sprite):
                     self.rect.x = hits[0].rect.left - self.rect.width
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
-        
+
         if direction == "y":
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
             if hits:
@@ -64,7 +70,7 @@ class Player1(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
-                    
+
     def place_bomb(self):
         x = int((self.rect.centerx - self.game.map_offset_x) / self.game.tilesize) * self.game.tilesize + self.game.map_offset_x
         y = int(self.rect.centery / self.game.tilesize) * self.game.tilesize
@@ -73,13 +79,15 @@ class Player1(pygame.sprite.Sprite):
             if bomb_rect.colliderect(sprite.rect):
                 break
         else:
-            if self.bomb_count > len(self.game.bomb):
-                Bomb(self.game, self.bomb_timer, self.explosion_range, x, y)
-            
-        
-    
+            if self.bomb_count > len([b for b in self.game.bomb if b.owner == self]):
+                Bomb(self.game, self.bomb_timer, self.explosion_range, self, x, y)
+
     def destroy(self):
         self.kill()
+            
+            
+
+
 class Destructible(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
@@ -98,6 +106,10 @@ class Destructible(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
     def destroy(self):
+        rng = random.randint(1, 100)
+        if rng <= 30:
+            choice = random.choice([(BombUp, self.game.bombpowerup_image), (RangeUp, self.game.rangepowerup_image)])
+            choice[0](self.game, choice[1], self.x, self.y,)
         self.kill()
         
 class Indestructible(pygame.sprite.Sprite):
@@ -119,8 +131,9 @@ class Indestructible(pygame.sprite.Sprite):
         self.rect.y = self.y
         
 class Bomb(pygame.sprite.Sprite):
-    def __init__(self, game, bomb_timer, explosion_range, x, y):
+    def __init__(self, game, bomb_timer, explosion_range, player, x, y):
         self.game = game
+        self.owner = player
         self.bomb_timer = bomb_timer
         self.explosion_range = explosion_range
         self.time_placed = pygame.time.get_ticks()
@@ -189,3 +202,37 @@ class Explosion(pygame.sprite.Sprite):
                 
         if pygame.time.get_ticks() - self.time_placed > explosion_timer:
             self.kill()
+            
+class PowerUp(pygame.sprite.Sprite):
+    def __init__(self, game, image, x, y):
+        self.game = game
+        self._layer = powerup_layer
+        self.groups = self.game.all_sprites, self.game.powerup
+        pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.x = x
+        self.y = y
+        self.width = int(self.game.tilesize * 0.9)
+        self.height = int(self.game.tilesize * 0.9)
+        
+        self.image = pygame.transform.scale(image, (self.width, self.height))
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+    
+    
+    def collect(self, player):
+        pass
+    def update(self):
+        for sprite in self.game.players:
+            if self.rect.colliderect(sprite.rect):
+                self.collect(sprite)
+class BombUp(PowerUp):
+    def collect(self, player):
+        player.bomb_count += 1
+        self.kill()
+    
+class RangeUp(PowerUp):
+    def collect(self, player):
+        player.explosion_range += 1
+        self.kill()

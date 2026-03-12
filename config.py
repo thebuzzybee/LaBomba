@@ -7,23 +7,30 @@ player1_velocity = 2
 player2_velocity = 2
 
 explosion_timer = 400
+bomb_count_start = 1
+bomb_timer_start = 3000
+explosion_range_start = 2
+player_velocity = 2
 
 player1_layer = 4
+player_layer = 4
 ground_layer = 1
 destructible_layer = 2
 indestructible_layer = 3
 bomb_layer = 2
 explosion_layer = 2
+powerup_layer = 2
 
 empty = 0
 destructible = 1
 indestructible = 3
 player1 = 2
+player2 = 4
 
 
 game_map1 = [
     [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
-    [3,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,3],
+    [3,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,4,3],
     [3,0,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,0,3],
     [3,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,3],
     [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
