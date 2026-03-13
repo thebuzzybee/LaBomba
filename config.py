@@ -10,7 +10,7 @@ explosion_timer = 400
 bomb_count_start = 1
 bomb_timer_start = 3000
 explosion_range_start = 2
-player_velocity = 2
+player_velocity = 4
 
 player1_layer = 4
 player_layer = 4

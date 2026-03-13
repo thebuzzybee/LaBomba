@@ -159,6 +159,7 @@ class Bomb(pygame.sprite.Sprite):
     def explosion(self):
         self.kill()
         directions = [(1,0),(-1,0),(0,1),(0,-1)]
+        hit = False
         for i in directions:
             for j in range(self.explosion_range):
                 explosion_x = self.rect.x + i[0] * j * self.game.tilesize
@@ -166,10 +167,15 @@ class Bomb(pygame.sprite.Sprite):
                 explosion_rect = pygame.Rect(explosion_x, explosion_y, self.game.tilesize, self.game.tilesize)
                 for sprite in self.game.blocks:
                     if explosion_rect.colliderect(sprite.rect) and isinstance(sprite, Destructible):
+                        hit = True
                         sprite.destroy()
                         break
                     elif explosion_rect.colliderect(sprite.rect) and isinstance(sprite, Indestructible):
+                        hit = True
                         break
+                if hit:
+                    hit = False
+                    break
                 else:
                     Explosion(self.game, explosion_x, explosion_y)
         
