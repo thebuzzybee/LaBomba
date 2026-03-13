@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.groups = self.game.all_sprites, self.game.players
         
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = spritesheet.get_sprite(0, 0, self.game.tilesize, self.game.tilesize)
+        self.image = spritesheet.get_sprite(0, 0, 32, 32)
         player_size = int(self.game.tilesize * 2/3)
         self.image = pygame.transform.scale(self.image, (player_size, player_size))
         self.rect = self.image.get_rect()

@@ -3,6 +3,7 @@ from pygame.examples.cursors import image
 
 from sprites import *
 from config import *
+from map import create_map1
 pygame.init()
 
 
@@ -37,9 +38,9 @@ class Game:
         self.rangepowerup_image = pygame.image.load("img/rangepowerup.png").convert_alpha()
     
     def createmap(self):
-        for row in range(len(game_map1)):
-            for column in range(len(game_map1[row])):
-                map_code = game_map1[row][column]
+        for row in range(len(create_map1())):
+            for column in range(len(create_map1()[row])):
+                map_code = create_map1()[row][column]
                 x = column * self.tilesize + self.map_offset_x
                 y = row * self.tilesize
                 if map_code == empty:

@@ -1,5 +1,5 @@
-﻿row_count = 32
-column_count = 32
+﻿row_count = 17
+column_count = 17
 
 
 fps = 60
