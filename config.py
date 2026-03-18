@@ -26,6 +26,8 @@ destructible = 1
 indestructible = 3
 player1 = 2
 player2 = 4
+player3 = 5
+player4 = 6
 
 
 game_map1 = [

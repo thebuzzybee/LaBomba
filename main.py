@@ -32,6 +32,8 @@ class Game:
         
         self.player1_spritesheet = Spritesheet("img/Character.png")
         self.player2_spritesheet = Spritesheet("img/Character.png")
+        self.player3_spritesheet = Spritesheet("img/Character.png")
+        self.player4_spritesheet = Spritesheet("img/Character.png")
         self.bomb_image = pygame.image.load("img/bomb.png").convert_alpha()
         self.explosion_image = pygame.image.load("img/explosion.png").convert_alpha()
         self.bombpowerup_image = pygame.image.load("img/bombpowerup.png").convert_alpha()
@@ -53,6 +55,10 @@ class Game:
                     Player(self, x ,y ,self.player1_spritesheet, controls_wasd, player_velocity)
                 elif map_code == player2:
                     Player(self, x ,y ,self.player2_spritesheet, controls_arrows, player_velocity)
+                elif map_code == player3:
+                    Player(self, x ,y ,self.player3_spritesheet, controls_ijkl, player_velocity)
+                elif map_code == player4:
+                    Player(self, x ,y ,self.player4_spritesheet, controls_numpad, player_velocity)
                     
     def new(self):
         self.playing = True
