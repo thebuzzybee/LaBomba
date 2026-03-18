@@ -100,7 +100,7 @@ class Destructible(pygame.sprite.Sprite):
         self.width = self.game.tilesize
         self.height = self.game.tilesize
         
-        self.image = pygame.image.load("img/brown_square.png").convert_alpha()
+        self.image = pygame.image.load("img/Destructible.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect()
         self.rect.x = self.x
