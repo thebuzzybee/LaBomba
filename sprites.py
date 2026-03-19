@@ -1,6 +1,7 @@
 ﻿import pygame
 from pygame.examples.grid import TILE_SIZE
 import random
+import math
 
 from config import *
 from settings import *
@@ -11,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.controls = controls
         self._layer = player_layer
         self.velocity = velocity
+        self.spritesheet = spritesheet
         self.x_change = 0
         self.y_change = 0
         self.bomb_count = bomb_count_start
@@ -19,20 +21,27 @@ class Player(pygame.sprite.Sprite):
         self.groups = self.game.all_sprites, self.game.players
         
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = spritesheet.get_sprite(0, 0, 32, 32)
-        player_size = int(self.game.tilesize * 2/3)
-        self.image = pygame.transform.scale(self.image, (player_size, player_size))
+        self.image = spritesheet.get_sprite(16, 143, 32, 48)
+        self.player_size = int(self.game.tilesize * 2/3)
+        self.image = pygame.transform.scale(self.image, (self.player_size, self.player_size * 1.5))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.hitbox = pygame.Rect(0, 0, int(self.player_size * 0.9), int(self.player_size * 1.05))
+        self.hitbox.center = self.rect.center
         self.player_facing = "down"
+        self.animation_loop = 1
 
     def update(self):
         self.movement()
-        self.rect.x += self.x_change
+        self.animate()
+        self.hitbox.x += self.x_change
+        self.rect.center = self.hitbox.center
         self.collide_blocks("x")
-        self.rect.y += self.y_change
+        self.hitbox.y += self.y_change
+        self.rect.center = self.hitbox.center
         self.collide_blocks("y")
+        self.rect.center = self.hitbox.center
 
         self.x_change = 0
         self.y_change = 0
@@ -56,20 +65,26 @@ class Player(pygame.sprite.Sprite):
 
     def collide_blocks(self, direction):
         if direction == "x":
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False,
+                                               collided=lambda a, b: a.hitbox.colliderect(b.rect))
             if hits:
                 if self.x_change > 0:
-                    self.rect.x = hits[0].rect.left - self.rect.width
+                    self.hitbox.x = hits[0].rect.left - self.hitbox.width
+                    self.rect.center = self.hitbox.center
                 if self.x_change < 0:
-                    self.rect.x = hits[0].rect.right
+                    self.hitbox.x = hits[0].rect.right
+                    self.rect.center = self.hitbox.center
 
         if direction == "y":
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False,
+                                               collided=lambda a, b: a.hitbox.colliderect(b.rect))
             if hits:
                 if self.y_change > 0:
-                    self.rect.y = hits[0].rect.top - self.rect.height
+                    self.hitbox.y = hits[0].rect.top - self.hitbox.height
+                    self.rect.center = self.hitbox.center
                 if self.y_change < 0:
-                    self.rect.y = hits[0].rect.bottom
+                    self.hitbox.y = hits[0].rect.bottom
+                    self.rect.center = self.hitbox.center
 
     def place_bomb(self):
         x = int((self.rect.centerx - self.game.map_offset_x) / self.game.tilesize) * self.game.tilesize + self.game.map_offset_x
@@ -81,6 +96,82 @@ class Player(pygame.sprite.Sprite):
         else:
             if self.bomb_count > len([b for b in self.game.bomb if b.owner == self]):
                 Bomb(self.game, self.bomb_timer, self.explosion_range, self, x, y)
+                
+    
+    def animate(self):
+        down_animations = [self.spritesheet.get_sprite(16, 143, 32, 48),
+                           self.spritesheet.get_sprite(80, 143, 32, 48),
+                           self.spritesheet.get_sprite(144, 143, 32, 48),
+                           self.spritesheet.get_sprite(208, 143, 32, 48),
+                           self.spritesheet.get_sprite(272, 143, 32, 48),
+                           self.spritesheet.get_sprite(336, 143, 32, 48),
+                           self.spritesheet.get_sprite(400, 143, 32, 48),
+                           self.spritesheet.get_sprite(464, 143, 32, 48)]
+        
+        up_animations = [self.spritesheet.get_sprite(16, 13, 32, 48),
+                         self.spritesheet.get_sprite(80, 13, 32, 48),
+                         self.spritesheet.get_sprite(144, 13, 32, 48),
+                         self.spritesheet.get_sprite(208, 13, 32, 48),
+                         self.spritesheet.get_sprite(272, 13, 32, 48),
+                         self.spritesheet.get_sprite(336, 13, 32, 48),
+                         self.spritesheet.get_sprite(400, 13, 32, 48),
+                         self.spritesheet.get_sprite(464, 13, 32, 48)]
+        
+        left_animations = [self.spritesheet.get_sprite(16, 80, 32, 48),
+                           self.spritesheet.get_sprite(80, 80, 32, 48),
+                           self.spritesheet.get_sprite(144, 80, 32, 48),
+                           self.spritesheet.get_sprite(208, 80, 32, 48),
+                           self.spritesheet.get_sprite(272, 80, 32, 48),
+                           self.spritesheet.get_sprite(336, 80, 32, 48),
+                           self.spritesheet.get_sprite(400, 80, 32, 48),
+                           self.spritesheet.get_sprite(464, 80, 32, 48)]
+        
+        right_animations = [self.spritesheet.get_sprite(16, 208, 32, 48),
+                            self.spritesheet.get_sprite(80, 208, 32, 48),
+                            self.spritesheet.get_sprite(144, 208, 32, 48),
+                            self.spritesheet.get_sprite(208, 208, 32, 48),
+                            self.spritesheet.get_sprite(272, 208, 32, 48),
+                            self.spritesheet.get_sprite(336, 208, 32, 48),
+                            self.spritesheet.get_sprite(400, 208, 32, 48),
+                            self.spritesheet.get_sprite(464, 208, 32, 48)]
+        
+        if self.player_facing == "down":
+            if self.y_change == 0:
+                self.image = self.spritesheet.get_sprite(16, 143, 32, 48)
+            else:
+                self.image = down_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.25
+                if self.animation_loop >= 8:
+                    self.animation_loop = 1
+
+        if self.player_facing == "up":
+            if self.y_change == 0:
+                self.image = self.spritesheet.get_sprite(16, 13, 32, 48)
+            else:
+                self.image = up_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.25
+                if self.animation_loop >= 8:
+                    self.animation_loop = 1
+
+        if self.player_facing == "left":
+            if self.x_change == 0:
+                self.image = self.spritesheet.get_sprite(16, 80, 32, 48)
+            else:
+                self.image = left_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.25
+                if self.animation_loop >= 8:
+                    self.animation_loop = 1
+
+        if self.player_facing == "right":
+            if self.x_change == 0:
+                self.image = self.spritesheet.get_sprite(16, 208, 32, 48)
+            else:
+                self.image = right_animations[math.floor(self.animation_loop)]
+                self.animation_loop += 0.25
+                if self.animation_loop >= 8:
+                    self.animation_loop = 1
+
+        self.image = pygame.transform.scale(self.image, (self.player_size, int(self.player_size * 1.5)))
 
     def destroy(self):
         self.kill()
@@ -124,7 +215,7 @@ class Indestructible(pygame.sprite.Sprite):
         self.width = self.game.tilesize
         self.height = self.game.tilesize
 
-        self.image = pygame.image.load("img/black_square.png").convert_alpha()
+        self.image = pygame.image.load("img/Indestructible.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect()
         self.rect.x = self.x

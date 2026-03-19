@@ -38,6 +38,8 @@ class Game:
         self.explosion_image = pygame.image.load("img/explosion.png").convert_alpha()
         self.bombpowerup_image = pygame.image.load("img/bombpowerup.png").convert_alpha()
         self.rangepowerup_image = pygame.image.load("img/rangepowerup.png").convert_alpha()
+        self.background_image = pygame.image.load("img/ground.png").convert_alpha()
+        self.background_image = pygame.transform.scale(self.background_image, (self.tilesize * column_count, self.tilesize * row_count))
     
     def createmap(self):
         for row in range(len(create_map1())):
@@ -87,6 +89,7 @@ class Game:
 
     def draw(self):
         self.window.fill((255,255,255))
+        self.window.blit(self.background_image, (self.map_offset_x, 0))
         self.all_sprites.draw(self.window)
         self.clock.tick(fps)
         pygame.display.update()
