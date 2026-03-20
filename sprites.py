@@ -13,6 +13,7 @@ class Player(pygame.sprite.Sprite):
         self._layer = player_layer
         self.velocity = velocity
         self.spritesheet = spritesheet
+        self.speedpickup_time = None
         self.x_change = 0
         self.y_change = 0
         self.bomb_count = bomb_count_start
@@ -27,10 +28,11 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.hitbox = pygame.Rect(0, 0, int(self.player_size * 0.9), int(self.player_size * 1.05))
+        self.hitbox = pygame.Rect(0, 0, int(self.player_size * 0.6), int(self.player_size * 1.05))
         self.hitbox.center = self.rect.center
         self.player_facing = "down"
         self.animation_loop = 1
+        self.animation_speed = 0.25
 
     def update(self):
         self.movement()
@@ -45,6 +47,12 @@ class Player(pygame.sprite.Sprite):
 
         self.x_change = 0
         self.y_change = 0
+        
+        if self.speedpickup_time is not None:
+            if pygame.time.get_ticks() - self.speedpickup_time > powerup_duration:
+                self.velocity -= 2
+                self.animation_speed -= 0.125
+                self.speedpickup_time = None
         
     def movement(self):
         keys = pygame.key.get_pressed()
@@ -140,7 +148,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.spritesheet.get_sprite(16, 143, 32, 48)
             else:
                 self.image = down_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.25
+                self.animation_loop += self.animation_speed
                 if self.animation_loop >= 8:
                     self.animation_loop = 1
 
@@ -149,7 +157,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.spritesheet.get_sprite(16, 13, 32, 48)
             else:
                 self.image = up_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.25
+                self.animation_loop += self.animation_speed
                 if self.animation_loop >= 8:
                     self.animation_loop = 1
 
@@ -158,7 +166,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.spritesheet.get_sprite(16, 80, 32, 48)
             else:
                 self.image = left_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.25
+                self.animation_loop += self.animation_speed
                 if self.animation_loop >= 8:
                     self.animation_loop = 1
 
@@ -167,7 +175,7 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.spritesheet.get_sprite(16, 208, 32, 48)
             else:
                 self.image = right_animations[math.floor(self.animation_loop)]
-                self.animation_loop += 0.25
+                self.animation_loop += self.animation_speed
                 if self.animation_loop >= 8:
                     self.animation_loop = 1
 
@@ -333,3 +341,13 @@ class RangeUp(PowerUp):
     def collect(self, player):
         player.explosion_range += 1
         self.kill()
+        
+class SpeedUp(PowerUp):
+    def collect(self, player):
+        player.speedpickup_time = pygame.time.get_ticks()
+        player.velocity += 2
+        player.animation_speed += 0.125
+        self.kill()
+        
+            
+        

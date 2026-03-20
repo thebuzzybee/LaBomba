@@ -38,6 +38,7 @@ class Game:
         self.explosion_image = pygame.image.load("img/explosion.png").convert_alpha()
         self.bombpowerup_image = pygame.image.load("img/bombpowerup.png").convert_alpha()
         self.rangepowerup_image = pygame.image.load("img/rangepowerup.png").convert_alpha()
+        self.speedpowerup_image = pygame.image.load("img/speedpowerup.png").convert_alpha()
         self.background_image = pygame.image.load("img/ground.png").convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (self.tilesize * column_count, self.tilesize * row_count))
     
@@ -72,11 +73,25 @@ class Game:
         self.explosion = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates()
         self.powerup = pygame.sprite.LayeredUpdates()
+        self.last_powerup_spawn = 0
         self.createmap()
         self.playing = True
     
     def updates(self):
         self.all_sprites.update()
+        if pygame.time.get_ticks() - self.last_powerup_spawn > spawn_interval:
+            self.last_powerup_spawn = pygame.time.get_ticks()
+            rnd = random.randint(1,6)
+            if rnd == 1:
+                attempts = 20
+                while attempts != 0:
+                    x = random.randint(1, column_count - 2) * self.tilesize + self.map_offset_x
+                    y = random.randint(1, row_count - 2) * self.tilesize
+                    test_rect = pygame.Rect(x, y, self.tilesize, self.tilesize)
+                    if not any(s.rect.colliderect(test_rect) for s in self.all_sprites):
+                        SpeedUp(self, self.speedpowerup_image, x, y)
+                        break
+                    attempts -= 1
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:

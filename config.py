@@ -9,6 +9,8 @@ player2_velocity = 2
 explosion_timer = 400
 bomb_count_start = 1
 bomb_timer_start = 3000
+powerup_duration = 15000
+spawn_interval = 7500
 explosion_range_start = 2
 player_velocity = 4
 
