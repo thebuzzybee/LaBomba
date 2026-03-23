@@ -99,7 +99,6 @@ class Game:
                 if player.score >= rounds_to_win:
                     pygame.quit()
                 else:
-                    self.createmap()
                     self.new()
     def events(self):
         for event in pygame.event.get():
