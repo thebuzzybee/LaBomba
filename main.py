@@ -43,9 +43,10 @@ class Game:
         self.background_image = pygame.transform.scale(self.background_image, (self.tilesize * column_count, self.tilesize * row_count))
     
     def createmap(self):
-        for row in range(len(create_map1())):
-            for column in range(len(create_map1()[row])):
-                map_code = create_map1()[row][column]
+        tilemap = create_map1()
+        for row in range(len(tilemap)):
+            for column in range(len(tilemap[row])):
+                map_code = tilemap[row][column]
                 x = column * self.tilesize + self.map_offset_x
                 y = row * self.tilesize
                 if map_code == empty:
