@@ -16,6 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.speedpickup_time = None
         self.x_change = 0
         self.y_change = 0
+        self.score = 0
         self.bomb_count = bomb_count_start
         self.bomb_timer = bomb_timer_start
         self.explosion_range = explosion_range_start
@@ -28,7 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.hitbox = pygame.Rect(0, 0, int(self.player_size * 0.6), int(self.player_size * 1.05))
+        self.hitbox = pygame.Rect(0, 0, int(self.player_size * 0.5), int(self.player_size * 0.9))
         self.hitbox.center = self.rect.center
         self.player_facing = "down"
         self.animation_loop = 1
@@ -272,6 +273,11 @@ class Bomb(pygame.sprite.Sprite):
                     elif explosion_rect.colliderect(sprite.rect) and isinstance(sprite, Indestructible):
                         hit = True
                         break
+                for sprite in self.game.powerup:
+                    if explosion_rect.colliderect(sprite.rect):
+                        if pygame.time.get_ticks() - sprite.spawn_time > explosion_timer:
+                            sprite.kill()
+                
                 if hit:
                     hit = False
                     break
@@ -298,7 +304,7 @@ class Explosion(pygame.sprite.Sprite):
 
     def update(self):
         for sprite in self.game.players:
-            if self.rect.colliderect(sprite.rect):
+            if self.rect.colliderect(sprite.hitbox):
                 sprite.destroy()
         
         for sprite in self.game.bomb:
@@ -312,6 +318,7 @@ class PowerUp(pygame.sprite.Sprite):
     def __init__(self, game, image, x, y):
         self.game = game
         self._layer = powerup_layer
+        self.spawn_time = pygame.time.get_ticks()
         self.groups = self.game.all_sprites, self.game.powerup
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -322,15 +329,15 @@ class PowerUp(pygame.sprite.Sprite):
         
         self.image = pygame.transform.scale(image, (self.width, self.height))
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.centerx = self.x + self.game.tilesize // 2
+        self.rect.centery = self.y + self.game.tilesize // 2
     
     
     def collect(self, player):
         pass
     def update(self):
         for sprite in self.game.players:
-            if self.rect.colliderect(sprite.rect):
+            if self.rect.colliderect(sprite.hitbox):
                 self.collect(sprite)
 class BombUp(PowerUp):
     def collect(self, player):
@@ -344,9 +351,10 @@ class RangeUp(PowerUp):
         
 class SpeedUp(PowerUp):
     def collect(self, player):
-        player.speedpickup_time = pygame.time.get_ticks()
-        player.velocity += 2
-        player.animation_speed += 0.125
+        if player.speedpickup_time is None:
+            player.speedpickup_time = pygame.time.get_ticks()
+            player.velocity += 2
+            player.animation_speed += 0.125
         self.kill()
         
             

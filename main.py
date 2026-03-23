@@ -92,6 +92,14 @@ class Game:
                         SpeedUp(self, self.speedpowerup_image, x, y)
                         break
                     attempts -= 1
+        if len(self.players) == 1:
+            for player in self.players:
+                player.score += 1
+                if player.score >= rounds_to_win:
+                    pygame.quit()
+                else:
+                    self.createmap()
+                    self.new()
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:

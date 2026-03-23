@@ -3,6 +3,8 @@ column_count = 17
 
 
 fps = 60
+rounds_to_win = 3
+
 player1_velocity = 2
 player2_velocity = 2
 
