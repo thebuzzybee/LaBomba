@@ -7,12 +7,13 @@ from config import *
 from settings import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, spritesheet, controls, velocity):
+    def __init__(self, game, x, y, spritesheet, controls, velocity, player_id):
         self.game = game
         self.controls = controls
         self._layer = player_layer
         self.velocity = velocity
         self.spritesheet = spritesheet
+        self.player_id = player_id
         self.speedpickup_time = None
         self.x_change = 0
         self.y_change = 0
@@ -21,6 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.bomb_timer = bomb_timer_start
         self.explosion_range = explosion_range_start
         self.groups = self.game.all_sprites, self.game.players
+        if self.player_id not in self.game.scores:
+            self.game.scores[self.player_id] = 0
         
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = spritesheet.get_sprite(16, 143, 32, 48)

@@ -29,6 +29,7 @@ class Game:
         self.running = True
         self.tilesize = screen_height // row_count
         self.map_offset_x = (screen_width - column_count * self.tilesize) // 2
+        self.scores = {}
         
         self.player1_spritesheet = Spritesheet("img/Character.png")
         self.player2_spritesheet = Spritesheet("img/Character.png")
@@ -56,16 +57,18 @@ class Game:
                 elif map_code == indestructible:
                     Indestructible(self,x,y)
                 elif map_code == player1:
-                    Player(self, x ,y ,self.player1_spritesheet, controls_wasd, player_velocity)
+                    Player(self, x ,y ,self.player1_spritesheet, controls_wasd, player_velocity, 1)
                 elif map_code == player2:
-                    Player(self, x ,y ,self.player2_spritesheet, controls_arrows, player_velocity)
+                    Player(self, x ,y ,self.player2_spritesheet, controls_arrows, player_velocity, 2)
                 elif map_code == player3:
-                    Player(self, x ,y ,self.player3_spritesheet, controls_ijkl, player_velocity)
+                    Player(self, x ,y ,self.player3_spritesheet, controls_ijkl, player_velocity, 3)
                 elif map_code == player4:
-                    Player(self, x ,y ,self.player4_spritesheet, controls_numpad, player_velocity)
+                    Player(self, x ,y ,self.player4_spritesheet, controls_numpad, player_velocity, 4)
                     
     def new(self):
         self.playing = True
+        self.round_over = False
+        self.round_start_time = pygame.time.get_ticks()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.destructibles = pygame.sprite.LayeredUpdates()
         self.indestructibles = pygame.sprite.LayeredUpdates()
@@ -93,13 +96,29 @@ class Game:
                         SpeedUp(self, self.speedpowerup_image, x, y)
                         break
                     attempts -= 1
-        if len(self.players) == 1:
+                    
+        if len(self.players) == 1 and not self.round_over and pygame.time.get_ticks() - self.round_start_time > 2000:
+            print(f"Players: {len(self.players)}, round_start: {pygame.time.get_ticks() - self.round_start_time}", self.scores)
+            self.round_over = True
             for player in self.players:
-                player.score += 1
-                if player.score >= rounds_to_win:
-                    pygame.quit()
+                print(player.player_id)
+                self.scores[player.player_id] += 1
+                print(self.scores)
+                if self.scores[player.player_id] >= rounds_to_win:
+                    self.running = False
+                    self.playing = False
                 else:
-                    self.new()
+                    self.playing = False
+                    
+    def round_end_screen(self):
+        self.window.fill((255,255,255))
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    break
+                
+                    
+    
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -121,7 +140,7 @@ class Game:
             self.events()
             self.updates()
             self.draw()
-        self.running = False    
+            
     
     def intro_screen(self):
         pass
@@ -132,6 +151,9 @@ g.intro_screen()
 g.new()
 while g.running:
     g.main()
+    if g.running:
+        g.round_end_screen()
+        g.new()
 
                 
             
