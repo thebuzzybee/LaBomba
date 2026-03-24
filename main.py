@@ -68,6 +68,7 @@ class Game:
     def new(self):
         self.playing = True
         self.round_over = False
+        self.game_over = False
         self.round_start_time = pygame.time.get_ticks()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.destructibles = pygame.sprite.LayeredUpdates()
@@ -77,7 +78,7 @@ class Game:
         self.explosion = pygame.sprite.LayeredUpdates()
         self.players = pygame.sprite.LayeredUpdates()
         self.powerup = pygame.sprite.LayeredUpdates()
-        self.last_powerup_spawn = 0
+        self.last_powerup_spawn = pygame.time.get_ticks()
         self.createmap()
         self.playing = True
     
@@ -98,25 +99,15 @@ class Game:
                     attempts -= 1
                     
         if len(self.players) == 1 and not self.round_over and pygame.time.get_ticks() - self.round_start_time > 2000:
-            print(f"Players: {len(self.players)}, round_start: {pygame.time.get_ticks() - self.round_start_time}", self.scores)
             self.round_over = True
-            for player in self.players:
-                print(player.player_id)
-                self.scores[player.player_id] += 1
-                print(self.scores)
+            for player in self.players:                
+                self.scores[player.player_id] += 1                
                 if self.scores[player.player_id] >= rounds_to_win:
                     self.running = False
                     self.playing = False
+                    self.game_over = True
                 else:
-                    self.playing = False
-                    
-    def round_end_screen(self):
-        self.window.fill((255,255,255))
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    break
-                
+                    self.playing = False               
                     
     
     def events(self):
@@ -145,16 +136,32 @@ class Game:
     def intro_screen(self):
         pass
     
+    def round_end_screen(self):
+        waiting = True
+        while waiting:
+            self.window.fill((255,255,255))
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        waiting = False
+                    elif event.key == pygame.K_ESCAPE:
+                        self.running = False
+                        waiting = False
+    def winner_screen(self):
+        pass
+    
     
 g = Game()
 g.intro_screen()
 g.new()
 while g.running:
     g.main()
-    if g.running:
+    if g.running and not g.game_over:
         g.round_end_screen()
         g.new()
-
+    elif g.game_over:
+        g.winner_screen()
                 
             
 
