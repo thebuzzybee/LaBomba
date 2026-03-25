@@ -121,7 +121,7 @@ class Game:
                 self.running = False
 
     def draw(self):
-        self.window.fill((255,255,255))
+        self.window.fill((205, 179, 139, 255))
         self.window.blit(self.background_image, (self.map_offset_x, 0))
         self.all_sprites.draw(self.window)
         self.clock.tick(fps)
@@ -139,7 +139,7 @@ class Game:
     def round_end_screen(self):
         waiting = True
         while waiting:
-            self.window.fill((255,255,255))
+            self.window.fill((205, 201, 165, 255))
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -149,7 +149,17 @@ class Game:
                         self.running = False
                         waiting = False
     def winner_screen(self):
-        pass
+        waiting = True
+        while waiting:
+            self.window.fill((238, 220, 130, 255))
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        waiting = False
+                    elif event.key == pygame.K_ESCAPE:
+                        self.running = False
+                        waiting = False
     
     
 g = Game()
