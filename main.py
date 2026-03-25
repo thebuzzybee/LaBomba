@@ -1,6 +1,8 @@
 ﻿import pygame
 from pygame.examples.cursors import image
 
+import pygame_gui
+
 from sprites import *
 from config import *
 from map import create_map1
@@ -30,6 +32,8 @@ class Game:
         self.tilesize = screen_height // row_count
         self.map_offset_x = (screen_width - column_count * self.tilesize) // 2
         self.scores = {}
+        
+        self.ui_manager = pygame_gui.UIManager((self.window.get_height(), self.window.get_width()), theme_path="theme.json")
         
         self.player1_spritesheet = Spritesheet("img/Character.png")
         self.player2_spritesheet = Spritesheet("img/Character.png")
@@ -103,7 +107,6 @@ class Game:
             for player in self.players:                
                 self.scores[player.player_id] += 1                
                 if self.scores[player.player_id] >= rounds_to_win:
-                    self.running = False
                     self.playing = False
                     self.game_over = True
                 else:
@@ -131,7 +134,10 @@ class Game:
             self.events()
             self.updates()
             self.draw()
-            
+    
+    def reset_game(self):
+        self.scores = {}
+        self.game_over = False
     
     def intro_screen(self):
         pass
@@ -140,6 +146,10 @@ class Game:
         waiting = True
         while waiting:
             self.window.fill((205, 201, 165, 255))
+            time_delta = self.clock.tick(fps) / 1000
+            self.ui_manager.process_events()
+            self.ui_manager.update(time_delta)
+            self.ui_manager.draw_ui(self.window)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -172,6 +182,9 @@ while g.running:
         g.new()
     elif g.game_over:
         g.winner_screen()
+        g.reset_game()
+        g.new()
+        print(g.scores)
                 
             
 
