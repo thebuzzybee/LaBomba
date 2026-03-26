@@ -144,20 +144,30 @@ class Game:
     
     def round_end_screen(self):
         waiting = True
-        while waiting:
-            self.window.fill((205, 201, 165, 255))
-            time_delta = self.clock.tick(fps) / 1000
-            self.ui_manager.process_events()
-            self.ui_manager.update(time_delta)
-            self.ui_manager.draw_ui(self.window)
-            pygame.display.update()
+        label_width = 400
+        label_height = 75
+        title_y = 50
+        center_x = self.window.get_width() // 2
+        center_y = self.window.get_height() // 2
+        top_left_x = center_x - label_width // 2
+        top_left_y = center_y - label_height // 2
+        
+        title_label = pygame_gui.elements.UILabel(relative_rect = pygame.Rect((top_left_x, title_y),(label_width, label_height)), text = "Round End", manager = self.ui_manager)
+        while waiting:            
+            time_delta = self.clock.tick(fps) / 1000           
             for event in pygame.event.get():
+                self.ui_manager.process_events(event)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         waiting = False
                     elif event.key == pygame.K_ESCAPE:
                         self.running = False
                         waiting = False
+            self.window.fill((205, 201, 165, 255))
+            self.ui_manager.update(time_delta)
+            self.ui_manager.draw_ui(self.window)
+            pygame.display.update()
+        title_label.kill()    
     def winner_screen(self):
         waiting = True
         while waiting:
@@ -184,7 +194,6 @@ while g.running:
         g.winner_screen()
         g.reset_game()
         g.new()
-        print(g.scores)
                 
             
 

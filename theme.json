@@ -1,17 +1,40 @@
 {
-     "button":
-     {
-         "colours":
-         {
-             "normal_border": "White",
-             "normal_bg": "SlateGray",
-             "normal_text": "White"
-         },
-         "misc":
-         {
-             "shape": "rounded_rectangle",
-             "shape_corner_radius": "10",
-             "border_width": "2"
-         }
-     }
- }
+    "button": {
+        "colours": {
+            "normal_border": "#53868B",
+            "hovered_border": "#7AC5CD",
+            "normal_bg": "#8EE5EE",
+            "hovered_bg": "#98F5FF",
+            "normal_text": "#FFFFFF"
+        },
+        "font": {
+            "name": "impact",
+            "size": "25",
+            "bold": "1",
+            "italic": "0"
+        },
+        "misc": {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2",
+            "shadow_width": "4"
+        }
+    },
+    "label": {
+        "colours": {
+            "normal_text": "#FFD700",
+            "dark_bg": "#CDC9A5"
+        },
+        "font": {
+            "name": "impact",
+            "size": "50",
+            "bold": "1",
+            "italic": "0"
+        },
+        "misc": {
+            "text_shadow": "1",
+            "text_shadow_size": "2",
+            "text_shadow_offset": "0,0"
+        }
+    }
+}
