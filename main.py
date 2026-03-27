@@ -25,12 +25,10 @@ class Game:
         pygame.init()
         self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         pygame.display.set_caption("LaBomba")
-        screen_height = self.window.get_height()
-        screen_width = self.window.get_width()
         self.clock = pygame.time.Clock()
         self.running = True
-        self.tilesize = screen_height // row_count
-        self.map_offset_x = (screen_width - column_count * self.tilesize) // 2
+        self.tilesize = self.window.get_height() // row_count
+        self.map_offset_x = (self.window.get_width() - column_count * self.tilesize) // 2
         self.scores = {}
         
         self.ui_manager = pygame_gui.UIManager((self.window.get_height(), self.window.get_width()), theme_path="theme.json")
@@ -153,6 +151,7 @@ class Game:
         top_left_y = center_y - label_height // 2
         
         title_label = pygame_gui.elements.UILabel(relative_rect = pygame.Rect((top_left_x, title_y),(label_width, label_height)), text = "Round End", manager = self.ui_manager)
+        
         while waiting:            
             time_delta = self.clock.tick(fps) / 1000           
             for event in pygame.event.get():
