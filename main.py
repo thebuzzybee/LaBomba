@@ -102,13 +102,8 @@ class Game:
                     
         if len(self.players) == 1 and not self.round_over and pygame.time.get_ticks() - self.round_start_time > 2000:
             self.round_over = True
-            for player in self.players:                
-                self.scores[player.player_id] += 1                
-                if self.scores[player.player_id] >= rounds_to_win:
-                    self.playing = False
-                    self.game_over = True
-                else:
-                    self.playing = False               
+            self.playing = False
+                            
                     
     
     def events(self):
@@ -149,6 +144,10 @@ class Game:
         center_y = self.window.get_height() // 2
         top_left_x = center_x - label_width // 2
         top_left_y = center_y - label_height // 2
+        
+        survivor = self.players.sprites()[0]
+        self.scores[survivor.player_id] += 1
+        print(f"Player {survivor.player_id} now has {self.scores[survivor.player_id]} points!")
         
         title_label = pygame_gui.elements.UILabel(relative_rect = pygame.Rect((top_left_x, title_y),(label_width, label_height)), text = "Round End", manager = self.ui_manager)
         print(f"Label rect: {title_label.rect}, text: '{title_label.text}'")
