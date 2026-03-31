@@ -28,7 +28,7 @@
         "font": {
             "name": "impact",
             "size": "60",
-            "bold": "1",
+            "bold": "0",
             "italic": "0"
         },
         "misc": {

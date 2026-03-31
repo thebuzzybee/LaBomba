@@ -31,7 +31,7 @@ class Game:
         self.map_offset_x = (self.window.get_width() - column_count * self.tilesize) // 2
         self.scores = {}
         
-        self.ui_manager = pygame_gui.UIManager((self.window.get_height(), self.window.get_width()), theme_path="theme.json")
+        self.ui_manager = pygame_gui.UIManager((self.window.get_width(), self.window.get_height()), theme_path="theme.json")
         
         self.player1_spritesheet = Spritesheet("img/Character.png")
         self.player2_spritesheet = Spritesheet("img/Character.png")
@@ -142,8 +142,8 @@ class Game:
     
     def round_end_screen(self):
         waiting = True
-        label_width = 400
-        label_height = 75
+        label_width = 1600
+        label_height = 150
         title_y = 50
         center_x = self.window.get_width() // 2
         center_y = self.window.get_height() // 2
@@ -151,6 +151,7 @@ class Game:
         top_left_y = center_y - label_height // 2
         
         title_label = pygame_gui.elements.UILabel(relative_rect = pygame.Rect((top_left_x, title_y),(label_width, label_height)), text = "Round End", manager = self.ui_manager)
+        print(f"Label rect: {title_label.rect}, text: '{title_label.text}'")
         
         while waiting:            
             time_delta = self.clock.tick(fps) / 1000           
