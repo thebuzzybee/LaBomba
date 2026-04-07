@@ -1,8 +1,5 @@
-﻿#import pygame
-#from pygame.examples.cursors import image
-
-import os
-print(os.path.exists("img/character.png"))
+﻿import pygame
+from pygame.examples.cursors import image
 
 import pygame_gui
 
