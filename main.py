@@ -1,5 +1,8 @@
-﻿import pygame
-from pygame.examples.cursors import image
+﻿#import pygame
+#from pygame.examples.cursors import image
+
+import os
+print(os.path.exists("img/character.png"))
 
 import pygame_gui
 
@@ -11,7 +14,7 @@ pygame.init()
 
 class Spritesheet:
     def __init__(self, filename):
-        self.sheet = pygame.image.load(filename).convert()
+        self.sheet = pygame.image.load(filename).convert_alpha()
         
     def get_sprite(self, x, y, width, height):
         sprite = pygame.Surface((width, height))
@@ -33,10 +36,10 @@ class Game:
         
         self.ui_manager = pygame_gui.UIManager((self.window.get_width(), self.window.get_height()), theme_path="theme.json")
         
-        self.player1_spritesheet = Spritesheet("img/Character.png")
-        self.player2_spritesheet = Spritesheet("img/Character.png")
-        self.player3_spritesheet = Spritesheet("img/Character.png")
-        self.player4_spritesheet = Spritesheet("img/Character.png")
+        self.player1_spritesheet = Spritesheet("img/character.png")
+        self.player2_spritesheet = Spritesheet("img/character.png")
+        self.player3_spritesheet = Spritesheet("img/character.png")
+        self.player4_spritesheet = Spritesheet("img/character.png")
         self.bomb_image = pygame.image.load("img/bomb.png").convert_alpha()
         self.explosion_image = pygame.image.load("img/explosion.png").convert_alpha()
         self.bombpowerup_image = pygame.image.load("img/bombpowerup.png").convert_alpha()
