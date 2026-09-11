@@ -31,3 +31,6 @@ Bomben- und Explosionsgrafiken sind derzeit Platzhalter und werden noch ersetzt.
 - Startmenü mit Auswahl der Spielerzahl
 - Eigene Bomben- und Explosionsgrafiken
 - Mehrere Spielfelder mit unterschiedlichen Themen, zufällig ausgewählt
+
+## Screenshot
+![Screenshot](screenshot.png)
